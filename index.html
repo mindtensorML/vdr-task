@@ -49,6 +49,7 @@ flowchart TD
     Start([Start]) --> ScanVDR[ScanVDR]
     ScanVDR --> Identify[Identify Deliverable]
     Identify --> DesignWF[Design WF]
+    Identify --> CurateRef[Curate Reference Files]
 
     DesignWF --> CreateSide[Create WF Side]
     DesignWF --> RewritePrompt[Re/Write Prompt]
@@ -76,6 +77,7 @@ flowchart TD
     UpdateResult --> UpdateDrive[Update Google Drive]
     CreateSide --> UpdateDrive
     HandGrade -.-> UpdateDrive
+    CurateRef --> UpdateDrive
 
     UpdateDrive --> Submit[Submit Task]
     Submit --> UpdateTracker[Update Tracker]
@@ -88,14 +90,14 @@ flowchart TD
     class Suitable,Pass,Threshold decision;
 
     classDef sidePath stroke-dasharray: 5 5;
-    class CreateSide,HandGrade sidePath;
+    class CreateSide,HandGrade,CurateRef sidePath;
         </pre>
       </div>
     </div>
 
     <!-- Footer -->
     <div class="text-center mt-8 text-zinc-500 text-sm">
-      Version 2
+      Version 3
     </div>
   </div>
 
