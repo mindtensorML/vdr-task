@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VDR Workflow • Prompt Iteration & SF QC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <style>
+    .mermaid-container {
+      background: #0f172a;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200 min-h-screen py-12">
+  <div class="max-w-6xl mx-auto px-6">
+    
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-5xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent tracking-tight">
+        VDR Workflow
+      </h1>
+      <p class="mt-3 text-zinc-400 text-xl">Prompt Iteration • Rubric & Golden Response Development • SF Evaluation</p>
+      <div class="h-1 w-28 bg-gradient-to-r from-emerald-400 to-teal-400 mx-auto mt-6 rounded-full"></div>
+    </div>
+
+    <!-- Beautiful Card -->
+    <div class="mermaid-container shadow-2xl border border-zinc-800">
+      
+      <!-- Top bar -->
+      <div class="bg-zinc-900 px-8 py-5 flex items-center justify-between border-b border-zinc-700">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">📋</span>
+          <span class="font-semibold text-lg text-emerald-300">Live Flowchart</span>
+        </div>
+        <button onclick="copyMermaid()" 
+                class="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 px-6 py-2.5 rounded-2xl text-sm font-medium transition-all active:scale-95">
+          📋 Copy Mermaid Code
+        </button>
+      </div>
+
+      <!-- Diagram -->
+      <div class="p-10 bg-[#0f172a]">
+        <pre class="mermaid" id="diagram">
+flowchart TD
+    Start([Start]) --> ScanVDR[ScanVDR]
+    ScanVDR --> Identify[Identify Deliverable]
+    Identify --> DesignWF[Design WF]
+
+    DesignWF --> CreateSide[Create WF Side]
+    DesignWF --> RewritePrompt[Re/Write Prompt]
+
+    subgraph Iteration ["🔄 Prompt & Response Iteration Cycle"]
+        direction TB
+        RewritePrompt --> RewriteRubric[Re/Write Rubric]
+        RewriteRubric --> Suitable{Is Prompt Suitable?}
+
+        Suitable -- NO --> RewritePrompt
+        Suitable -- YES --> RewriteGolden[Re/Write Golden Response]
+
+        RewriteGolden --> Assess[Assess with Rubric]
+        Assess --> Pass{Meets Rubric?}
+
+        Pass -- NO --> RewritePrompt
+        Pass -- YES --> Evaluate[Evaluate in SF]
+        Evaluate --> HandGrade[Hand Grade SF Output]
+        HandGrade --> Threshold{Does Output meet threshold?}
+
+        Threshold -- NO --> RewritePrompt
+    end
+
+    Threshold -- YES --> UpdateResult[Update Result in Rubric]
+    UpdateResult --> UpdateDrive[Update G. Drive]
+    CreateSide --> UpdateDrive
+    HandGrade -.-> UpdateDrive
+
+    UpdateDrive --> Submit[Submit task]
+    Submit --> UpdateTracker[Update tracker]
+    UpdateTracker --> End([End])
+
+    classDef rewriteBox fill:#1e40af,stroke:#60a5fa,stroke-width:2px,rx:12,ry:12,color:#fff;
+    class RewritePrompt,RewriteRubric,RewriteGolden rewriteBox;
+
+    classDef decision fill:#451a03,stroke:#fb923c,stroke-width:2px,color:#fff;
+    class Suitable,Pass,Threshold decision;
+
+    classDef sidePath stroke-dasharray: 5 5;
+    class CreateSide,HandGrade sidePath;
+        </pre>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-8 text-zinc-500 text-sm">
+      Hand-drawn original → Digital beauty • Built with ❤️ using Mermaid & Tailwind
+    </div>
+  </div>
+
+  <script>
+    // Configure Mermaid with bright, highly visible arrows & lines (cyan/teal)
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "base",
+      themeVariables: {
+        background: "#0f172a",
+        mainBkg: "#1e2937",
+        nodeBorder: "#60a5fa",
+        textColor: "#e2e8f0",
+        lineColor: "#67e8f9",
+        arrowColor: "#67e8f9",
+        primaryColor: "#1e40af",
+        primaryTextColor: "#fff",
+        primaryBorderColor: "#60a5fa",
+        secondaryColor: "#451a03",
+        secondaryTextColor: "#fff",
+        tertiaryColor: "#fff",
+        edgeLabelBackground: "#1e2937"
+      }
+    });
+
+    // Render diagram reliably after page is fully loaded
+    window.addEventListener('load', async function() {
+      await mermaid.run({
+        querySelector: '.mermaid',
+        suppressErrors: true
+      });
+    });
+
+    // Copy Mermaid code function
+    function copyMermaid() {
+      const code = document.getElementById('diagram').innerText.trim();
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = event.currentTarget;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✅ Copied!';
+        setTimeout(() => { btn.innerHTML = originalText; }, 2200);
+      });
+    }
+
+    // Tailwind ready
+    tailwind.config = { content: [] };
+  </script>
+</body>
+</html>
