@@ -56,35 +56,35 @@ flowchart TD
     subgraph Iteration ["🔄 Prompt & Response Iteration Cycle"]
         direction TB
         RewritePrompt --> RewriteRubric[Re/Write Rubric]
-        RewriteRubric --> Suitable{Is Prompt Suitable?}
+        RewriteRubric --> Suitable{Is Prompt Ready?}
 
         Suitable -- NO --> RewritePrompt
         Suitable -- YES --> RewriteGolden[Re/Write Golden Response]
 
         RewriteGolden --> Assess[Assess with Rubric]
-        Assess --> Pass{Meets Rubric?}
+        Assess --> Pass{Rubric Threshold Met?}
 
         Pass -- NO --> RewritePrompt
         Pass -- YES --> Evaluate[Evaluate in SF]
-        Evaluate --> HandGrade[Hand Grade SF Output]
-        HandGrade --> Threshold{Does Output meet threshold?}
+        Evaluate --> HandGrade[Manually Grade SF Output]
+        HandGrade --> Threshold{Meets Quality Threshold?}
 
         Threshold -- NO --> RewritePrompt
     end
 
-    Threshold -- YES --> UpdateResult[Update Result in Rubric]
-    UpdateResult --> UpdateDrive[Update G. Drive]
+    Threshold -- YES --> UpdateResult[Update Rubric Results]
+    UpdateResult --> UpdateDrive[Update Google Drive]
     CreateSide --> UpdateDrive
     HandGrade -.-> UpdateDrive
 
-    UpdateDrive --> Submit[Submit task]
-    Submit --> UpdateTracker[Update tracker]
+    UpdateDrive --> Submit[Submit Task]
+    Submit --> UpdateTracker[Update Tracker]
     UpdateTracker --> End([End])
 
-    classDef rewriteBox fill:#1e40af,stroke:#60a5fa,stroke-width:2px,rx:12,ry:12,color:#fff;
+    classDef rewriteBox fill:#1e40af,stroke:#60a5fa,stroke-width:2.5px,rx:12,ry:12,color:#fff;
     class RewritePrompt,RewriteRubric,RewriteGolden rewriteBox;
 
-    classDef decision fill:#451a03,stroke:#fb923c,stroke-width:2px,color:#fff;
+    classDef decision fill:#451a03,stroke:#fb923c,stroke-width:2.5px,color:#fff;
     class Suitable,Pass,Threshold decision;
 
     classDef sidePath stroke-dasharray: 5 5;
@@ -95,12 +95,11 @@ flowchart TD
 
     <!-- Footer -->
     <div class="text-center mt-8 text-zinc-500 text-sm">
-      Version 1
+      Hand-drawn original → Digital beauty • Built with ❤️ using Mermaid & Tailwind
     </div>
   </div>
 
   <script>
-    // Configure Mermaid with bright, highly visible arrows & lines (cyan/teal)
     mermaid.initialize({
       startOnLoad: false,
       theme: "base",
@@ -121,15 +120,10 @@ flowchart TD
       }
     });
 
-    // Render diagram reliably after page is fully loaded
     window.addEventListener('load', async function() {
-      await mermaid.run({
-        querySelector: '.mermaid',
-        suppressErrors: true
-      });
+      await mermaid.run({ querySelector: '.mermaid', suppressErrors: true });
     });
 
-    // Copy Mermaid code function
     function copyMermaid() {
       const code = document.getElementById('diagram').innerText.trim();
       navigator.clipboard.writeText(code).then(() => {
@@ -140,7 +134,6 @@ flowchart TD
       });
     }
 
-    // Tailwind ready
     tailwind.config = { content: [] };
   </script>
 </body>
